@@ -14,7 +14,7 @@ if (!password) {
 }
 
 (async () => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({headless: false});
   const page = await browser.newPage();
 
   await page.goto("https://mail.google.com", { waitUntil: "networkidle0" });
@@ -22,9 +22,11 @@ if (!password) {
   await page.type('input[type="email"]', email);
   await page.click("#identifierNext");
 
+  await page.waitForNavigation({ waitUntil: "networkidle0" });
+
   await page.waitForSelector('input[type="password"]');
   await page.type('input[type="password"]', password);
-  await page.click("#passwordNext");
+  // await page.click("#passwordNext");
 
   await page.waitForNavigation({ waitUntil: "networkidle0" });
 
