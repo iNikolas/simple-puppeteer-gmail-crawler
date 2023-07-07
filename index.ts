@@ -23,7 +23,7 @@ if (!password) {
   await page.click("#identifierNext");
 
   await page.waitForSelector('input[type="password"]');
-  await page.type('input[type="password"]', "your-password");
+  await page.type('input[type="password"]', password);
   await page.click("#passwordNext");
 
   await page.waitForNavigation({ waitUntil: "networkidle0" });
