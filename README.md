@@ -6,7 +6,7 @@ This is a project for automating web interactions using Puppeteer. It allows for
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/iNikolas/selenium-website-crawler`
+1. Clone the repository: `git clone https://github.com/iNikolas/simple-puppeteer-gmail-crawler.git`
 2. Install dependencies: `yarn install`
 
 ## Usage
