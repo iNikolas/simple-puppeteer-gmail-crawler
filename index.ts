@@ -14,7 +14,7 @@ if (!password) {
 }
 
 (async () => {
-  const browser = await puppeteer.launch({headless: false});
+  const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
 
   await page.goto("https://mail.google.com", { waitUntil: "networkidle0" });
@@ -35,7 +35,7 @@ if (!password) {
       '[aria-label="Inbox"] span[role="link"]',
     );
     if (!unreadElement) {
-      throw 'Failed to read Inbox'
+      throw "Failed to read Inbox";
     }
     return parseInt(unreadElement.textContent);
   });
