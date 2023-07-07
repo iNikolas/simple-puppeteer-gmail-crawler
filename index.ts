@@ -26,13 +26,11 @@ if (!password) {
   await page.keyboard.press("Enter");
 
   await page.waitForNavigation();
-
   await page.waitForSelector(passwordSelector);
 
   await new Promise((resolve) => setTimeout(() => resolve(null), 2000));
 
   await page.type(passwordSelector, password);
-  await page.click(passwordSelector);
   await page.keyboard.press("Enter");
 
   await page.waitForNavigation();
