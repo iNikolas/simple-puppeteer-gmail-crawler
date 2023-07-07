@@ -14,35 +14,31 @@ if (!password) {
 }
 
 (async () => {
-  // Launch the browser with a visible window
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
-  // Enable the 'networkidle0' option to wait for all network connections to finish
   await page.goto("https://mail.google.com", { waitUntil: "networkidle0" });
 
-  // Enter the email address
   await page.type('input[type="email"]', email);
   await page.click("#identifierNext");
 
-  // Wait for the password input to appear and enter the password
   await page.waitForSelector('input[type="password"]');
   await page.type('input[type="password"]', "your-password");
   await page.click("#passwordNext");
 
-  // Wait for the Gmail inbox to load
   await page.waitForNavigation({ waitUntil: "networkidle0" });
 
-  // Check for unread messages
   const unreadCount = await page.evaluate(() => {
     const unreadElement = document.querySelector(
       '[aria-label="Inbox"] span[role="link"]',
     );
-    return unreadElement ? parseInt(unreadElement.textContent) : 0;
+    if (!unreadElement) {
+      throw 'Failed to read Inbox'
+    }
+    return parseInt(unreadElement.textContent);
   });
 
   console.log(`Unread messages: ${unreadCount}`);
 
-  // Keep the browser window open to inspect the state
-  // await browser.close();
+  await browser.close();
 })();
