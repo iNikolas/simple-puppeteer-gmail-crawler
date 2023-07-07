@@ -40,12 +40,13 @@ if (!password) {
   const unreadCount = await page.evaluate(() => {
     const unreadElement = document.querySelector('a[aria-label^="Inbox"]');
     if (!unreadElement || typeof unreadElement.ariaLabel !== "string") {
-      throw "Failed to read Inbox";
+      return null;
     }
     return parseInt(unreadElement.ariaLabel.match(/\d+/g)[0]);
   });
 
-  console.log(`Unread messages: ${unreadCount}`);
+  const result = unreadCount === null || isNaN(unreadCount) ? 'Failed to read Unread messages' : `Unread messages: ${unreadCount}`
+  console.log(result);
 
   await browser.close();
 })();
