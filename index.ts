@@ -4,6 +4,9 @@ puppeteer.use(StealthPlugin());
 
 const email = process.argv[2];
 const password = process.argv[3];
+const gmailUrl = "https://mail.google.com";
+const emailSelector = 'input[type="email"]';
+const passwordSelector = 'input[type="password"]';
 
 if (!email) {
   throw "Email argument was not provided";
@@ -14,30 +17,32 @@ if (!password) {
 }
 
 (async () => {
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: "new" });
   const page = await browser.newPage();
 
-  await page.goto("https://mail.google.com", { waitUntil: "networkidle0" });
+  await page.goto(gmailUrl, { waitUntil: "networkidle0" });
 
-  await page.type('input[type="email"]', email);
-  await page.click("#identifierNext");
+  await page.type(emailSelector, email);
+  await page.keyboard.press("Enter");
 
-  await page.waitForNavigation({ waitUntil: "networkidle0" });
+  await page.waitForNavigation();
 
-  await page.waitForSelector('input[type="password"]');
-  await page.type('input[type="password"]', password);
-  // await page.click("#passwordNext");
+  await page.waitForSelector(passwordSelector);
 
-  await page.waitForNavigation({ waitUntil: "networkidle0" });
+  await new Promise((resolve) => setTimeout(() => resolve(null), 2000));
+
+  await page.type(passwordSelector, password);
+  await page.click(passwordSelector);
+  await page.keyboard.press("Enter");
+
+  await page.waitForNavigation();
 
   const unreadCount = await page.evaluate(() => {
-    const unreadElement = document.querySelector(
-      '[aria-label="Inbox"] span[role="link"]',
-    );
-    if (!unreadElement) {
+    const unreadElement = document.querySelector('a[aria-label^="Inbox"]');
+    if (!unreadElement || typeof unreadElement.ariaLabel !== "string") {
       throw "Failed to read Inbox";
     }
-    return parseInt(unreadElement.textContent);
+    return parseInt(unreadElement.ariaLabel.match(/\d+/g)[0]);
   });
 
   console.log(`Unread messages: ${unreadCount}`);
